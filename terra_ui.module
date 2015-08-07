@@ -181,7 +181,7 @@ function terra_ui_env_user($node) {
         'roles' => array(
           DRUPAL_AUTHENTICATED_RID => 'authenticated user',
         ),
-        'profile' => $data['profile'],
+        //'profile' => $data['profile'],
       );
       $fields['name'] = preg_replace('/@.*$/', '', $mail);
       $fields['name'] = email_registration_cleanup_username($fields['name']);
