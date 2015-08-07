@@ -1,5 +1,5 @@
 # terra_ui
-A Drupal user interface for [http://terra.readthedocs.org/](terra).
+A Drupal user interface for [erra](http://terra.readthedocs.org/).
 
 ### Installation
 
@@ -66,5 +66,5 @@ cd terra-callback
 composer install
 php receiver.php
 ```
-You may need to update the `AMQP server information` in `receiver.php`.
+You may need to update the AMQP server information in `receiver.php`.
 
