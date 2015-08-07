@@ -1,5 +1,5 @@
 # terra_ui
-A Drupal user interface for [erra](http://terra.readthedocs.org/).
+A flexible Drupal user interface for [Terra](http://terra.readthedocs.org/).
 
 ### Installation
 
@@ -70,7 +70,9 @@ You may need to update the AMQP server information in `receiver.php`.
 
 You may want to skip host checking to prevent `receiver.php` from hanging.  
 See [this post](http://stackoverflow.com/questions/3663895/ssh-the-authenticity-of-host-hostname-cant-be-established) for more details and security implications.
+In your `~/.ssh/config` (if this file doesn't exist, just create it):
 ```
-ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no
+Host *
+    StrictHostKeyChecking no
 ```
 
