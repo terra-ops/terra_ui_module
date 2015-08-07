@@ -68,3 +68,9 @@ php receiver.php
 ```
 You may need to update the AMQP server information in `receiver.php`.
 
+You may want to skip host checking to prevent `receiver.php` from hanging.  
+See [this post](http://stackoverflow.com/questions/3663895/ssh-the-authenticity-of-host-hostname-cant-be-established) for more details and security implications.
+```
+ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no
+```
+
