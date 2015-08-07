@@ -66,4 +66,5 @@ cd terra-callback
 composer install
 php receiver.php
 ```
+You may need to update the `AMQP server information` in `receiver.php`.
 
