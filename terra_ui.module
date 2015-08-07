@@ -1,0 +1,243 @@
+<?php
+/**
+ * @file
+ * Code for the Terra UI feature.
+ */
+
+include_once 'terra_ui.features.inc';
+
+// @todo: how can we not do this here?
+require_once __DIR__ . '/vendor/autoload.php';
+use PhpAmqpLib\Connection\AMQPConnection;
+use PhpAmqpLib\Message\AMQPMessage;
+
+
+define('TERRA_UI_CALLBACK', 'api/terra/callback');
+
+
+/**
+ * Implements hook_menu().
+ */
+function terra_ui_menu() {
+
+  $items[TERRA_UI_CALLBACK] = array(
+    'title' => 'Create',
+    'page callback' => 'terra_ui_callback',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+
+  return $items;
+}
+
+/**
+ * JSON callback function.
+ * This is called by RabbitMQ after a command has been successfully run.
+ */
+function terra_ui_callback() {
+  $data = $_REQUEST;
+  watchdog('terra_ui', 'Callback: <pre>!data</pre>', array(
+    '!data' => var_export($data, 1)
+  ));
+  $args = json_decode($data['args']);
+  $cmd = json_decode($data['cmd']);
+
+  if (!empty($args->nid)) {
+    $node = node_load($args->nid);
+  }
+
+  switch ($args->key) {
+    case 'app:add':
+      if ($data['result'] == 'App saved') {
+        $node->status = TRUE;
+        node_save($node);
+        watchdog('terra_ui', 'Enabled app !title', array('!title' => $node->title));
+      }
+      break;
+    case 'environment:add':
+      if (strpos($data['result'], 'ENABLE')) {
+        $node->status = TRUE;
+        $app_node = node_load($node->field_env_app[LANGUAGE_NONE][0]['target_id']);
+        // @todo: get url from $data['output']
+        $node->field_env_url[LANGUAGE_NONE][0]['url'] = 'http://' . $cmd->args[1] .'.'. $cmd->args[2] .'.'. $app_node->field_app_host[LANGUAGE_NONE][0]['value'];
+        node_save($node);
+        watchdog('terra_ui', 'Enabled enviornment !title', array('!title' => $node->title));
+      }
+      break;
+  }
+
+  drupal_json_output(array('status' => TRUE)); 
+}
+
+
+
+/**
+ * Implements hook_node_insert().
+ */
+function terra_ui_node_insert($node) {
+
+  switch ($node->type) {
+    case 'app':
+        terra_ui_app_add($node);
+      break;
+    case 'environment':
+        terra_ui_env_add($node);
+      break;
+  }
+
+}
+
+/**
+ * Terra command.
+ * Run the terra app:add command.
+ */
+function terra_ui_app_add($node) {
+  global $user;
+
+  $data = array(
+    array(
+      'key' => 'app:add',
+      'nid' => $node->nid,
+      'cmd' => array(
+        'cmd' => 'terra',
+        'args' => array('app:add', $node->title, $node->field_app_repo[LANGUAGE_NONE][0]['value']),
+        'flags' => array(
+          '--host' => $node->field_app_host[LANGUAGE_NONE][0]['value'],
+        ),
+      ),
+    ),
+  );
+
+  terra_ui_send($data);
+}
+
+
+/**
+ * Terra command.
+ * Run the terra environment:add command.
+ */
+function terra_ui_env_add($node) {
+  // Create new user if necessary
+  $account = terra_ui_env_user($node);
+
+  $app_node = node_load($node->field_env_app[LANGUAGE_NONE][0]['target_id']);
+  $alias = '@' . $app_node->title .'.'. $node->title;
+
+  $data = array(
+    array(
+      'key' => 'environment:add',
+      'nid' => $node->nid,
+      'uid' => $account->uid,
+      'cmd' => array(
+        'cmd' => 'terra',
+        'args' => array('environment:add', $app_node->title, $node->title), // , $path
+        'flags' => array(
+          '--enable' => 'ENABLE',
+        ),
+      ),
+    ),
+  );
+
+  // Add extra commands from $node->field_env_cmds
+  if (!empty($app_node->field_app_cmds[LANGUAGE_NONE][0]['value'])) {
+    $text = trim($app_node->field_app_cmds[LANGUAGE_NONE][0]['value']);
+    $text = token_replace($text, array('node' => $node, 'user' => $account));
+    $text = str_replace('[node:alias]', $alias, $text);
+    $textAr = explode("\n", $text);
+    $textAr = array_filter($textAr, 'trim');
+    foreach ($textAr as $line) {
+      $data[] = array(
+        'key' => 'drush',
+        'nid' => $node->nid,
+        'uid' => $account->uid,
+        'cmd' => trim($line),
+      );
+    }
+  }
+  dpm($data);
+
+  terra_ui_send($data);
+}
+
+
+/**
+ * Helper function.
+ * If there is a value for $node->field_env_email, create a new user.
+ */
+function terra_ui_env_user($node) {
+  global $user;
+
+  if (!empty($node->field_env_email[LANGUAGE_NONE][0]['value'])) {
+    $mail = $node->field_env_email[LANGUAGE_NONE][0]['value'];
+    $account = user_load_by_mail($mail);
+    
+    if ($account === FALSE) {
+      $password = user_password(8);
+      $fields = array(
+        'mail' => $mail,
+        'pass' => $password,
+        'status' => 1,  //@todo: verification?
+        'init' => 'email address',
+        'roles' => array(
+          DRUPAL_AUTHENTICATED_RID => 'authenticated user',
+        ),
+        'profile' => $data['profile'],
+      );
+      $fields['name'] = preg_replace('/@.*$/', '', $mail);
+      $fields['name'] = email_registration_cleanup_username($fields['name']);
+      $account = user_save('', $fields);
+
+      watchdog('terra_ui', 'New user created for !title: <pre>!account</pre>', array(
+        '!title' => $node->title .', '. $node->nid,
+        '!title' => print_r($account, 1)
+      ));      
+    }
+
+  }
+  else {
+    $account = user_load($node->uid);
+  }
+
+  return $account;  
+}
+
+
+/**
+ * Helper function.
+ * Post a command to the RabbitMQ server.
+ */
+function terra_ui_send($data) {
+
+  $server = variable_get('amqp_server', array(
+    'host' => 'localhost',
+    'port' => 5672,
+    'user' => 'guest',
+    'pass' => 'guest',
+    'queue' => 'terra',
+  ));
+
+  // Add some params to data
+  global $user;
+  $callback = url(TERRA_UI_CALLBACK, array('absolute' => TRUE));  
+  foreach ($data as &$cmd) {
+    if (is_array($cmd['cmd']) && !empty($cmd['cmd']['cmd']) && $cmd['cmd']['cmd'] == 'terra') {
+      $cmd['cmd']['flags']['--no-interaction'] = TRUE;
+      $cmd['cmd']['flags']['--no-ansi'] = TRUE;
+    }
+    $cmd['uid'] = !empty($cmd['uid']) ? $cmd['uid'] : $user->uid;
+    $cmd['callback'] = $callback;
+  }
+  
+  $data = json_encode($data);
+
+  // Post to RabbitMQ
+  $connection = new AMQPConnection($server['host'], $server['port'], $server['user'], $server['pass']);
+  $channel = $connection->channel();
+  $channel->queue_declare($server['queue'], false, false, false, false);
+  $msg = new AMQPMessage($data);
+  $channel->basic_publish($msg, '', $server['queue']);
+  watchdog('terra_ui', 'Command posted to queue:<pre>!cmds</pre>', array('!cmds' => $data));
+  $channel->close();
+  $connection->close();
+
+}
