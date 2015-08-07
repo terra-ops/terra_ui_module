@@ -2,7 +2,11 @@
 A Drupal user interface for [http://terra.readthedocs.org/](terra).
 
 ### Installation
-Terra UI should be installed on the same mchine as the Terra CLI.
+
+Dependencies:
+* Terra
+* Drush
+Terra UI should be installed on the same mchine as the Terra CLI (for now).
 
 Overview of the installation steps:
 * Install RabbitMQ
