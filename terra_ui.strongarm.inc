@@ -14,14 +14,14 @@ function terra_ui_strongarm() {
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'additional_settings__active_tab_app';
-  $strongarm->value = 'edit-submission';
+  $strongarm->value = 'edit-workflow';
   $export['additional_settings__active_tab_app'] = $strongarm;
 
   $strongarm = new stdClass();
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'additional_settings__active_tab_environment';
-  $strongarm->value = 'edit-submission';
+  $strongarm->value = 'edit-workflow';
   $export['additional_settings__active_tab_environment'] = $strongarm;
 
   $strongarm = new stdClass();
@@ -36,13 +36,13 @@ function terra_ui_strongarm() {
           'weight' => '6',
         ),
         'title' => array(
-          'weight' => '1',
+          'weight' => '0',
         ),
         'path' => array(
-          'weight' => '4',
+          'weight' => '3',
         ),
         'redirect' => array(
-          'weight' => '5',
+          'weight' => '4',
         ),
       ),
       'display' => array(),
@@ -108,18 +108,14 @@ function terra_ui_strongarm() {
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'node_options_app';
-  $strongarm->value = array(
-    0 => 'status',
-  );
+  $strongarm->value = array();
   $export['node_options_app'] = $strongarm;
 
   $strongarm = new stdClass();
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'node_options_environment';
-  $strongarm->value = array(
-    0 => 'status',
-  );
+  $strongarm->value = array();
   $export['node_options_environment'] = $strongarm;
 
   $strongarm = new stdClass();

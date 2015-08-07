@@ -10,6 +10,25 @@
 function terra_ui_field_default_field_bases() {
   $field_bases = array();
 
+  // Exported field_base: 'field_app_cmds'
+  $field_bases['field_app_cmds'] = array(
+    'active' => 1,
+    'cardinality' => 1,
+    'deleted' => 0,
+    'entity_types' => array(),
+    'field_name' => 'field_app_cmds',
+    'indexes' => array(
+      'format' => array(
+        0 => 'format',
+      ),
+    ),
+    'locked' => 0,
+    'module' => 'text',
+    'settings' => array(),
+    'translatable' => 0,
+    'type' => 'text_long',
+  );
+
   // Exported field_base: 'field_app_host'
   $field_bases['field_app_host'] = array(
     'active' => 1,
@@ -87,25 +106,6 @@ function terra_ui_field_default_field_bases() {
     'type' => 'entityreference',
   );
 
-  // Exported field_base: 'field_env_cmds'
-  $field_bases['field_env_cmds'] = array(
-    'active' => 1,
-    'cardinality' => 1,
-    'deleted' => 0,
-    'entity_types' => array(),
-    'field_name' => 'field_env_cmds',
-    'indexes' => array(
-      'format' => array(
-        0 => 'format',
-      ),
-    ),
-    'locked' => 0,
-    'module' => 'text',
-    'settings' => array(),
-    'translatable' => 0,
-    'type' => 'text_long',
-  );
-
   // Exported field_base: 'field_env_email'
   $field_bases['field_env_email'] = array(
     'active' => 1,
@@ -134,18 +134,26 @@ function terra_ui_field_default_field_bases() {
     'deleted' => 0,
     'entity_types' => array(),
     'field_name' => 'field_env_url',
-    'indexes' => array(
-      'format' => array(
-        0 => 'format',
-      ),
-    ),
+    'indexes' => array(),
     'locked' => 0,
-    'module' => 'text',
+    'module' => 'link',
     'settings' => array(
-      'max_length' => 255,
+      'attributes' => array(
+        'class' => '',
+        'rel' => '',
+        'target' => 'default',
+      ),
+      'display' => array(
+        'url_cutoff' => 80,
+      ),
+      'enable_tokens' => 1,
+      'title' => 'optional',
+      'title_maxlength' => 128,
+      'title_value' => '',
+      'url' => 0,
     ),
     'translatable' => 0,
-    'type' => 'text',
+    'type' => 'link_field',
   );
 
   // Exported field_base: 'field_env_users'

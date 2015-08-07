@@ -10,10 +10,59 @@
 function terra_ui_field_default_field_instances() {
   $field_instances = array();
 
+  // Exported field_instance: 'node-app-field_app_cmds'
+  $field_instances['node-app-field_app_cmds'] = array(
+    'bundle' => 'app',
+    'default_value' => NULL,
+    'deleted' => 0,
+    'description' => 'Enter any drush commands that should be run after .terra.yml has run. Supports tokens. The node token contains all of the values from the Environment. Use <code>node:alias</code> as the drush alias. Examples:
+<code>
+drush node:alias vset site_name \'node:field_description\'
+</code>
+Note that all tokens are missing brackets (Drupal limitation).',
+    'display' => array(
+      'default' => array(
+        'label' => 'above',
+        'module' => 'text',
+        'settings' => array(),
+        'type' => 'text_default',
+        'weight' => 2,
+      ),
+      'teaser' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+    ),
+    'entity_type' => 'node',
+    'fences_wrapper' => 'div',
+    'field_name' => 'field_app_cmds',
+    'label' => 'Drush commands',
+    'required' => 0,
+    'settings' => array(
+      'text_processing' => 0,
+      'user_register_form' => FALSE,
+    ),
+    'widget' => array(
+      'active' => 1,
+      'module' => 'text',
+      'settings' => array(
+        'rows' => 5,
+      ),
+      'type' => 'text_textarea',
+      'weight' => 5,
+    ),
+  );
+
   // Exported field_instance: 'node-app-field_app_host'
   $field_instances['node-app-field_app_host'] = array(
     'bundle' => 'app',
-    'default_value' => NULL,
+    'default_value' => array(
+      0 => array(
+        'value' => 'localhost',
+      ),
+    ),
     'deleted' => 0,
     'description' => '',
     'display' => array(
@@ -35,7 +84,7 @@ function terra_ui_field_default_field_instances() {
     'fences_wrapper' => 'div',
     'field_name' => 'field_app_host',
     'label' => 'Host',
-    'required' => 0,
+    'required' => 1,
     'settings' => array(
       'text_processing' => 0,
       'user_register_form' => FALSE,
@@ -47,7 +96,7 @@ function terra_ui_field_default_field_instances() {
         'size' => 60,
       ),
       'type' => 'text_textfield',
-      'weight' => 3,
+      'weight' => 2,
     ),
   );
 
@@ -76,7 +125,7 @@ function terra_ui_field_default_field_instances() {
     'fences_wrapper' => 'div',
     'field_name' => 'field_app_repo',
     'label' => 'Git repository',
-    'required' => 0,
+    'required' => 1,
     'settings' => array(
       'text_processing' => 0,
       'user_register_form' => FALSE,
@@ -88,7 +137,7 @@ function terra_ui_field_default_field_instances() {
         'size' => 60,
       ),
       'type' => 'text_textfield',
-      'weight' => 2,
+      'weight' => 1,
     ),
   );
 
@@ -129,51 +178,6 @@ function terra_ui_field_default_field_instances() {
       'settings' => array(),
       'type' => 'options_select',
       'weight' => 1,
-    ),
-  );
-
-  // Exported field_instance: 'node-environment-field_env_cmds'
-  $field_instances['node-environment-field_env_cmds'] = array(
-    'bundle' => 'environment',
-    'default_value' => NULL,
-    'deleted' => 0,
-    'description' => 'Enter any drush commands that should be run after .terra.yml has run. Supports tokens (use <code>@node:field_env_app:title:node:title</code> as the drush alias). Examples:
-<code>
-drush @node:field_env_app:title:node:title vset site_name \'node:field_description\'
-</code>
-Note that all tokens are missing brackets (Drupal limitation).',
-    'display' => array(
-      'default' => array(
-        'label' => 'above',
-        'module' => 'text',
-        'settings' => array(),
-        'type' => 'text_default',
-        'weight' => 8,
-      ),
-      'teaser' => array(
-        'label' => 'above',
-        'settings' => array(),
-        'type' => 'hidden',
-        'weight' => 0,
-      ),
-    ),
-    'entity_type' => 'node',
-    'fences_wrapper' => 'div',
-    'field_name' => 'field_env_cmds',
-    'label' => 'Drush commands',
-    'required' => 0,
-    'settings' => array(
-      'text_processing' => 0,
-      'user_register_form' => FALSE,
-    ),
-    'widget' => array(
-      'active' => 1,
-      'module' => 'text',
-      'settings' => array(
-        'rows' => 5,
-      ),
-      'type' => 'text_textarea',
-      'weight' => 5,
     ),
   );
 
@@ -223,14 +227,14 @@ Note that all tokens are missing brackets (Drupal limitation).',
     'bundle' => 'environment',
     'default_value' => NULL,
     'deleted' => 0,
-    'description' => 'This will be automatically populated after the site is created.',
+    'description' => '',
     'display' => array(
       'default' => array(
         'label' => 'above',
-        'module' => 'text',
+        'module' => 'link',
         'settings' => array(),
-        'type' => 'text_default',
-        'weight' => 2,
+        'type' => 'link_default',
+        'weight' => 9,
       ),
       'teaser' => array(
         'label' => 'above',
@@ -245,17 +249,34 @@ Note that all tokens are missing brackets (Drupal limitation).',
     'label' => 'URL',
     'required' => 0,
     'settings' => array(
-      'text_processing' => 0,
+      'absolute_url' => 1,
+      'attributes' => array(
+        'class' => '',
+        'configurable_class' => 0,
+        'configurable_title' => 0,
+        'rel' => '',
+        'target' => 'default',
+        'title' => '',
+      ),
+      'display' => array(
+        'url_cutoff' => 80,
+      ),
+      'enable_tokens' => 1,
+      'rel_remove' => 'default',
+      'title' => 'none',
+      'title_label_use_field_label' => 0,
+      'title_maxlength' => 128,
+      'title_value' => '',
+      'url' => 0,
       'user_register_form' => FALSE,
+      'validate_url' => 0,
     ),
     'widget' => array(
-      'active' => 1,
-      'module' => 'text',
-      'settings' => array(
-        'size' => 60,
-      ),
-      'type' => 'text_textfield',
-      'weight' => 4,
+      'active' => 0,
+      'module' => 'link',
+      'settings' => array(),
+      'type' => 'link_field',
+      'weight' => 12,
     ),
   );
 
@@ -308,15 +329,14 @@ Note that all tokens are missing brackets (Drupal limitation).',
   t('App');
   t('Drush commands');
   t('Email');
-  t('Enter any drush commands that should be run after .terra.yml has run. Supports tokens (use <code>@node:field_env_app:title:node:title</code> as the drush alias). Examples:
+  t('Enter any drush commands that should be run after .terra.yml has run. Supports tokens. The node token contains all of the values from the Environment. Use <code>node:alias</code> as the drush alias. Examples:
 <code>
-drush @node:field_env_app:title:node:title vset site_name \'node:field_description\'
+drush node:alias vset site_name \'node:field_description\'
 </code>
 Note that all tokens are missing brackets (Drupal limitation).');
   t('Git repository');
   t('Host');
   t('This is only used to store data before auto-generating a new account.');
-  t('This will be automatically populated after the site is created.');
   t('URL');
   t('Used to track additional users associated with the site.');
   t('Users');
