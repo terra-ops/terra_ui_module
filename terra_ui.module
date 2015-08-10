@@ -88,6 +88,23 @@ function terra_ui_node_insert($node) {
 }
 
 /**
+ * Implements hook_node_delete().
+ */
+function terra_ui_node_delete($node) {
+
+  switch ($node->type) {
+    case 'app':
+        terra_ui_app_remove($node);
+      break;
+    case 'environment':
+        terra_ui_env_remove($node);
+      break;
+  }
+
+}
+
+
+/**
  * Terra command.
  * Run the terra app:add command.
  */
@@ -103,6 +120,30 @@ function terra_ui_app_add($node) {
         'args' => array('app:add', $node->title, $node->field_app_repo[LANGUAGE_NONE][0]['value']),
         'flags' => array(
           '--host' => $node->field_app_host[LANGUAGE_NONE][0]['value'],
+        ),
+      ),
+    ),
+  );
+
+  terra_ui_send($data);
+}
+
+
+/**
+ * Terra command.
+ * Run the terra app:add command.
+ */
+function terra_ui_app_remove($node) {
+  global $user;
+
+  $data = array(
+    array(
+      'key' => 'app:remove',
+      'nid' => $node->nid,
+      'cmd' => array(
+        'cmd' => 'terra',
+        'args' => array('app:remove', $node->title),
+        'flags' => array(
         ),
       ),
     ),
@@ -142,7 +183,7 @@ function terra_ui_env_add($node) {
   if (!empty($app_node->field_app_cmds[LANGUAGE_NONE][0]['value'])) {
     $text = trim($app_node->field_app_cmds[LANGUAGE_NONE][0]['value']);
     $text = token_replace($text, array('node' => $node, 'user' => $account));
-    $text = str_replace('[node:alias]', $alias, $text);
+    $text = str_replace('[alias]', $alias, $text);
     $textAr = explode("\n", $text);
     $textAr = array_filter($textAr, 'trim');
     foreach ($textAr as $line) {
@@ -154,10 +195,35 @@ function terra_ui_env_add($node) {
       );
     }
   }
-  dpm($data);
 
   terra_ui_send($data);
 }
+
+
+/**
+ * Terra command.
+ * Run the terra environment:add command.
+ */
+function terra_ui_env_remove($node) {
+  $app_node = node_load($node->field_env_app[LANGUAGE_NONE][0]['target_id']);
+
+  $data = array(
+    array(
+      'key' => 'environment:remove',
+      'nid' => $node->nid,
+      'uid' => $node->uid,
+      'cmd' => array(
+        'cmd' => 'terra',
+        'args' => array('environment:remove', $app_node->title, $node->title),
+        'flags' => array(
+        ),
+      ),
+    ),
+  );
+
+  terra_ui_send($data);
+}
+
 
 
 /**
