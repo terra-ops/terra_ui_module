@@ -275,7 +275,7 @@ function terra_ui_env_user($node) {
 function terra_ui_send($data) {
 
   $server = variable_get('amqp_server', array(
-    'host' => 'localhost',
+    'host' => 'queue',
     'port' => 5672,
     'user' => 'guest',
     'pass' => 'guest',
