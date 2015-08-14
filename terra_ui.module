@@ -55,13 +55,27 @@ function terra_ui_callback() {
       }
       break;
     case 'environment:add':
-      if (strpos($data['result'], 'ENABLE')) {
+      if (strpos($data['output'], 'ENABLE')) {
         $node->status = TRUE;
+        if (!empty($node->field_env_status)) {
+          $node->field_env_status[LANGUAGE_NONE][0]['value'] = 'built';
+        }
         $app_node = node_load($node->field_env_app[LANGUAGE_NONE][0]['target_id']);
         // @todo: get url from $data['output']
         $node->field_env_url[LANGUAGE_NONE][0]['url'] = 'http://' . $cmd->args[1] .'.'. $cmd->args[2] .'.'. $app_node->field_app_host[LANGUAGE_NONE][0]['value'];
         node_save($node);
         watchdog('terra_ui', 'Enabled enviornment !title', array('!title' => $node->title));
+      }
+      break;
+    case 'drush':
+      if (isset($node->field_env_status)) {
+        $node->field_env_status[LANGUAGE_NONE][0]['value'] = 'configured';
+      }
+      if (isset($node->field_env_login)) {
+        $url = trim(str_replace($data['result'], '', $data['output']));
+        $node->field_env_login[LANGUAGE_NONE][0]['url'] = $url;
+        node_save($node);
+        watchdog('terra_ui', 'Set login url for environment !title', array('!title' => $node->title));
       }
       break;
   }
@@ -173,7 +187,7 @@ function terra_ui_env_add($node) {
         'cmd' => 'terra',
         'args' => array('environment:add', $app_node->title, $node->title), // , $path
         'flags' => array(
-          '--enable' => 'ENABLE',
+          '--enable' => '',
         ),
       ),
     ),
