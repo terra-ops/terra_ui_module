@@ -1,0 +1,12 @@
+{
+  "queues": [
+  {
+    "name": "terra",
+    "passive": false,
+    "durable": true,
+    "exclusive": false,
+    "auto_delete": true,
+    "nowait": false
+  }
+  ]
+}
