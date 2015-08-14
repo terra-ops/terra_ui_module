@@ -33,6 +33,7 @@ function terra_ui_menu() {
 /**
  * JSON callback function.
  * This is called by RabbitMQ after a command has been successfully run.
+ * @todo: can this be replaced by a amqp receiver? see https://www.drupal.org/node/1815932
  */
 function terra_ui_callback() {
   $data = $_REQUEST;
@@ -275,7 +276,7 @@ function terra_ui_env_user($node) {
 function terra_ui_send($data) {
 
   $server = variable_get('amqp_server', array(
-    'host' => 'localhost',
+    'host' => 'queue',
     'port' => 5672,
     'user' => 'guest',
     'pass' => 'guest',
@@ -295,6 +296,12 @@ function terra_ui_send($data) {
   }
   
   $data = json_encode($data);
+
+
+$broker = message_broker_get();
+
+$message_body = json_encode(array('data' => 'anyData'));
+$broker->sendMessage($message_body, 'yourDestination');
 
   // Post to RabbitMQ
   $connection = new AMQPConnection($server['host'], $server['port'], $server['user'], $server['pass']);
