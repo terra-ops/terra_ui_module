@@ -181,6 +181,46 @@ Note that all tokens are missing brackets (Drupal limitation).',
     ),
   );
 
+  // Exported field_instance: 'node-environment-field_env_domains'
+  $field_instances['node-environment-field_env_domains'] = array(
+    'bundle' => 'environment',
+    'default_value' => NULL,
+    'deleted' => 0,
+    'description' => '',
+    'display' => array(
+      'default' => array(
+        'label' => 'above',
+        'module' => 'text',
+        'settings' => array(),
+        'type' => 'text_default',
+        'weight' => 10,
+      ),
+      'teaser' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+    ),
+    'entity_type' => 'node',
+    'field_name' => 'field_env_domains',
+    'label' => 'Domains',
+    'required' => 0,
+    'settings' => array(
+      'text_processing' => 0,
+      'user_register_form' => FALSE,
+    ),
+    'widget' => array(
+      'active' => 1,
+      'module' => 'text',
+      'settings' => array(
+        'size' => 60,
+      ),
+      'type' => 'text_textfield',
+      'weight' => 13,
+    ),
+  );
+
   // Exported field_instance: 'node-environment-field_env_email'
   $field_instances['node-environment-field_env_email'] = array(
     'bundle' => 'environment',
@@ -219,64 +259,6 @@ Note that all tokens are missing brackets (Drupal limitation).',
       ),
       'type' => 'text_textfield',
       'weight' => 6,
-    ),
-  );
-
-  // Exported field_instance: 'node-environment-field_env_url'
-  $field_instances['node-environment-field_env_url'] = array(
-    'bundle' => 'environment',
-    'default_value' => NULL,
-    'deleted' => 0,
-    'description' => '',
-    'display' => array(
-      'default' => array(
-        'label' => 'above',
-        'module' => 'link',
-        'settings' => array(),
-        'type' => 'link_default',
-        'weight' => 9,
-      ),
-      'teaser' => array(
-        'label' => 'above',
-        'settings' => array(),
-        'type' => 'hidden',
-        'weight' => 0,
-      ),
-    ),
-    'entity_type' => 'node',
-    'fences_wrapper' => 'div',
-    'field_name' => 'field_env_url',
-    'label' => 'URL',
-    'required' => 0,
-    'settings' => array(
-      'absolute_url' => 1,
-      'attributes' => array(
-        'class' => '',
-        'configurable_class' => 0,
-        'configurable_title' => 0,
-        'rel' => '',
-        'target' => 'default',
-        'title' => '',
-      ),
-      'display' => array(
-        'url_cutoff' => 80,
-      ),
-      'enable_tokens' => 1,
-      'rel_remove' => 'default',
-      'title' => 'none',
-      'title_label_use_field_label' => 0,
-      'title_maxlength' => 128,
-      'title_value' => '',
-      'url' => 0,
-      'user_register_form' => FALSE,
-      'validate_url' => 0,
-    ),
-    'widget' => array(
-      'active' => 0,
-      'module' => 'link',
-      'settings' => array(),
-      'type' => 'link_field',
-      'weight' => 12,
     ),
   );
 
@@ -327,6 +309,7 @@ Note that all tokens are missing brackets (Drupal limitation).',
   // Translatables
   // Included for use with string extractors like potx.
   t('App');
+  t('Domains');
   t('Drush commands');
   t('Email');
   t('Enter any drush commands that should be run after .terra.yml has run. Supports tokens. The node token contains all of the values from the Environment. Use <code>node:alias</code> as the drush alias. Examples:
@@ -337,7 +320,6 @@ Note that all tokens are missing brackets (Drupal limitation).');
   t('Git repository');
   t('Host');
   t('This is only used to store data before auto-generating a new account.');
-  t('URL');
   t('Used to track additional users associated with the site.');
   t('Users');
 
