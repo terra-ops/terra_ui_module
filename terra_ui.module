@@ -210,6 +210,8 @@ function terra_ui_env_add($node) {
     }
   }
 
+  drupal_alter('terra_ui_env_add', $data);
+
   terra_ui_send($data);
 }
 
