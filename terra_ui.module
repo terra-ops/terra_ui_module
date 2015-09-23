@@ -193,6 +193,22 @@ function terra_ui_env_add($node) {
     ),
   );
 
+  // Add domains
+  foreach ($node->field_env_domains[LANGUAGE_NONE] as $item) {
+    $data[] = array(
+      'key' => 'environment:domains add',
+      'nid' => $node->nid,
+      'uid' => $account->uid,
+      'cmd' => array(
+        'cmd' => 'terra',
+        'args' => array('environment:domains', $app_node->title, $node->title, 'add', $item['value']), 
+        'flags' => array(
+          '--enable' => '',
+        ),
+      ),
+    );
+  }
+
   // Add extra commands from $node->field_env_cmds
   if (!empty($app_node->field_app_cmds[LANGUAGE_NONE][0]['value'])) {
     $text = trim($app_node->field_app_cmds[LANGUAGE_NONE][0]['value']);
