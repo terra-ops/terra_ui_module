@@ -185,7 +185,7 @@ function terra_ui_env_add($node) {
       'uid' => $account->uid,
       'cmd' => array(
         'cmd' => 'terra',
-        'args' => array('environment:add', $app_node->title, $node->title, '/root/Apps/' . $app_node->title . '/' . $node->title, 'www'), 
+        'args' => array('environment:add', $app_node->title, 'www'), 
         // @todo: path, document root shouldn't be hardcoded
         'flags' => array(
           '--enable' => TRUE,
@@ -320,7 +320,7 @@ function terra_ui_send($data) {
   $callback = url(TERRA_UI_CALLBACK, array('absolute' => TRUE));  
   foreach ($data as &$cmd) {
     if (is_array($cmd['cmd']) && !empty($cmd['cmd']['cmd']) && $cmd['cmd']['cmd'] == 'terra') {
-      $cmd['cmd']['flags']['--no-interaction'] = TRUE;
+      //$cmd['cmd']['flags']['--no-interaction'] = TRUE;
       $cmd['cmd']['flags']['--no-ansi'] = TRUE;
     }
     $cmd['uid'] = !empty($cmd['uid']) ? $cmd['uid'] : $user->uid;
