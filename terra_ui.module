@@ -320,7 +320,7 @@ function terra_ui_send($data) {
   $callback = url(TERRA_UI_CALLBACK, array('absolute' => TRUE));  
   foreach ($data as &$cmd) {
     if (is_array($cmd['cmd']) && !empty($cmd['cmd']['cmd']) && $cmd['cmd']['cmd'] == 'terra') {
-      $cmd['cmd']['flags']['-y'] = TRUE;
+      $cmd['cmd']['flags']['--no-interaction'] = TRUE;
       $cmd['cmd']['flags']['--no-ansi'] = TRUE;
     }
     $cmd['uid'] = !empty($cmd['uid']) ? $cmd['uid'] : $user->uid;
